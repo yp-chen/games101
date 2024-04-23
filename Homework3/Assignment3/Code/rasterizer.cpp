@@ -174,7 +174,6 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList) {
 
     float f1 = (50 - 0.1) / 2.0;
     float f2 = (50 + 0.1) / 2.0;
-
     Eigen::Matrix4f mvp = projection * view * model;
     for (const auto& t:TriangleList)
     {
@@ -188,6 +187,7 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList) {
 
         std::array<Eigen::Vector3f, 3> viewspace_pos;
 
+        //没有经过投影变换，保存顶点的原始坐标
         std::transform(mm.begin(), mm.end(), viewspace_pos.begin(), [](auto& v) {
             return v.template head<3>();
         });
@@ -204,6 +204,7 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList) {
             vec.z()/=vec.w();
         }
 
+        //法线变换，法线不能和顶点一样使用mv，法线从local space变换到view space的变换矩阵为顶点位置变换矩阵mv的逆矩阵的转置矩阵
         Eigen::Matrix4f inv_trans = (view * model).inverse().transpose();
         Eigen::Vector4f n[] = {
                 inv_trans * to_vec4(t->normal[0], 0.0f),
@@ -310,7 +311,11 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
         for(int j=minY;j<maxY;j++)
         {
             //check whether the point is inside the triangle
+            
             int Index=get_index(i,j);
+            if (Index>=width*height || Index<0) {
+                continue;
+            }
             int l=0;
             int IsInTriangleCount=0;
             bool IsDontBeCover=false;
@@ -359,7 +364,6 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
             {
                 if(insideTriangle(i+0.5f,j+0.5f,t.v))
                 {
-
                     auto[alpha, beta, gamma] = computeBarycentric2D(i+0.5f, j+0.5f, t.v);
                     float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
                     float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
@@ -368,6 +372,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
                     // check zbuff
                     if(z_interpolated<depth_buf[Index])
                     {
+                        //插值得到颜色、法线、纹理坐标
                         auto interpolated_color=interpolate(alpha,beta,gamma,t.color[0],t.color[1],t.color[2],1);
                         auto interpolated_normal=interpolate(alpha,beta,gamma,t.normal[0],t.normal[1],t.normal[2],1).normalized();
                         auto interpolated_texcoords=interpolate(alpha,beta,gamma,t.tex_coords[0],t.tex_coords[1],t.tex_coords[2],1);
@@ -382,7 +387,6 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t, const std::array<Eig
             }
         }
     }
- 
 }
 
 void rst::rasterizer::set_model(const Eigen::Matrix4f& m)

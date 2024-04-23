@@ -108,7 +108,7 @@ Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload& payload){
     auto l2 = light{{-20, 20, 0}, {500, 500, 500}};
 
     std::vector<light> lights = {l1, l2};
-    Eigen::Vector3f amb_light_intensity{10, 10, 10};
+    Eigen::Vector3f amb_light_intensity{10, 10, 10}; //Ia
     Eigen::Vector3f eye_pos{0, 0, 10};
 
     float p = 150;
@@ -140,7 +140,7 @@ Eigen::Vector3f texture_fragment_shader(const fragment_shader_payload& payload){
     return result_color * 255.f;
 }
 
-//布林phong着色器
+//blinn-phong模型
 Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload& payload){
     Eigen::Vector3f ka = Eigen::Vector3f(0.005, 0.005, 0.005);
     Eigen::Vector3f kd = payload.color;
@@ -310,10 +310,10 @@ int main(int argc, const char** argv)
 
     std::string filename = "output.png";
     objl::Loader Loader;
-    std::string obj_path = "./models/spot/";
+    std::string obj_path = "./models/rock/";
 
     // 读取 .obj 文件
-    bool loadout = Loader.LoadFile("./models/spot/spot_triangulated_good.obj");
+    bool loadout = Loader.LoadFile("./models/rock/rock.obj");
     for(auto mesh:Loader.LoadedMeshes)
     {
         for(int i=0;i<mesh.Vertices.size();i+=3)
@@ -328,10 +328,9 @@ int main(int argc, const char** argv)
             TriangleList.push_back(t);
         }
     }
-
     rst::rasterizer r(700, 700);
 
-    auto texture_path = "spot_texture.png";
+    auto texture_path = "rock.png";
     r.set_texture(Texture(obj_path + texture_path));
 
     //法线贴图 normal_fragment_shader
@@ -339,7 +338,7 @@ int main(int argc, const char** argv)
     //布林phong模型 phong_fragment_shader
     //位移贴图 displacement_fragment_shader
     //凹凸贴图 bump_fragment_shader
-    std::function<Eigen::Vector3f(fragment_shader_payload)> active_shader = displacement_fragment_shader;
+    std::function<Eigen::Vector3f(fragment_shader_payload)> active_shader = texture_fragment_shader;
 
     // if (argc >= 2)
     // {
@@ -400,7 +399,6 @@ int main(int argc, const char** argv)
 
         return 0;
     }
-
     while(key != 27)
     {
         r.clear(rst::Buffers::Color | rst::Buffers::Depth);
@@ -427,7 +425,6 @@ int main(int argc, const char** argv)
         {
             angle += 2;
         }
-
     }
     return 0;
 }

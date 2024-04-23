@@ -105,7 +105,7 @@ namespace rst
 
         std::optional<Texture> texture;
 
-        //片元着色器和顶点着色器
+        //像素着色器和顶点着色器
         std::function<Eigen::Vector3f(fragment_shader_payload)> fragment_shader;
         std::function<Eigen::Vector3f(vertex_shader_payload)> vertex_shader;
         //超采样深度缓存
