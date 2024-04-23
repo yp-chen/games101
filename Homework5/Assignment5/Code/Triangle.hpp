@@ -4,7 +4,7 @@
 
 #include <cstring>
 
-//光线与三角形相交
+//光线与三角形相交，Moller Trumbore算法，根据求出点的重心坐标是否大于等于0，判断是否在三角形内
 bool rayTriangleIntersect(const Vector3f& v0, const Vector3f& v1, const Vector3f& v2, const Vector3f& orig,
                           const Vector3f& dir, float& tnear, float& u, float& v)
 {
@@ -56,6 +56,7 @@ public:
             const Vector3f& v1 = vertices[vertexIndex[k * 3 + 1]];
             const Vector3f& v2 = vertices[vertexIndex[k * 3 + 2]];
             float t, u, v;
+            //取相交中t最小的
             if (rayTriangleIntersect(v0, v1, v2, orig, dir, t, u, v) && t < tnear)
             {
                 tnear = t;
