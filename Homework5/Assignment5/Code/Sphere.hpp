@@ -32,6 +32,7 @@ public:
         return true;
     }
 
+    //返回圆上一点的法向量
     void getSurfaceProperties(const Vector3f& P, const Vector3f&, const uint32_t&, const Vector2f&,
                               Vector3f& N, Vector2f&) const override
     {

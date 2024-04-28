@@ -31,6 +31,7 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
 
     // Compute bounds of all primitives in BVH node
     Bounds3 bounds;
+    //得到所有物体的包围盒
     for (int i = 0; i < objects.size(); ++i)
         bounds = Union(bounds, objects[i]->getBounds());
     if (objects.size() == 1) {
@@ -53,6 +54,7 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
         for (int i = 0; i < objects.size(); ++i)
             centroidBounds =
                 Union(centroidBounds, objects[i]->getBounds().Centroid());
+        //选择最大维度来进行划分，排序
         int dim = centroidBounds.maxExtent();
         switch (dim) {
         case 0:

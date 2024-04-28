@@ -8,6 +8,7 @@
 struct Ray{
     //Destination = origin + t*direction
     Vector3f origin;
+    //direction_inv是方向的倒数，用于加速计算
     Vector3f direction, direction_inv;
     double t;//transportation time,
     double t_min, t_max;
@@ -19,6 +20,7 @@ struct Ray{
 
     }
 
+    //返回ray经过某一时间t所在点的坐标
     Vector3f operator()(double t) const{return origin+direction*t;}
 
     friend std::ostream &operator<<(std::ostream& os, const Ray& r){

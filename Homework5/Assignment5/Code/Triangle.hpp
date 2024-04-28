@@ -70,6 +70,7 @@ public:
         return intersect;
     }
 
+    //返回三角形上一点的法向量和纹理坐标
     void getSurfaceProperties(const Vector3f&, const Vector3f&, const uint32_t& index, const Vector2f& uv, Vector3f& N,
                               Vector2f& st) const override
     {
@@ -85,6 +86,7 @@ public:
         st = st0 * (1 - uv.x - uv.y) + st1 * uv.x + st2 * uv.y;
     }
 
+    //返回三角形的漫反射底色
     Vector3f evalDiffuseColor(const Vector2f& st) const override
     {
         float scale = 5;
@@ -92,6 +94,7 @@ public:
         return lerp(Vector3f(0.815, 0.235, 0.031), Vector3f(0.937, 0.937, 0.231), pattern);
     }
 
+    //顶点坐标、三角形个数、三角形顶点序号、顶点对应纹理坐标
     std::unique_ptr<Vector3f[]> vertices;
     uint32_t numTriangles;
     std::unique_ptr<uint32_t[]> vertexIndex;

@@ -8,6 +8,7 @@
 
 constexpr float kInfinity = std::numeric_limits<float>::max();
 
+//clamp函数，将v限制在[lo,hi]之间
 inline float clamp(const float& lo, const float& hi, const float& v)
 {
     return std::max(lo, std::min(hi, v));
@@ -39,6 +40,7 @@ enum MaterialType
     REFLECTION
 };
 
+//生成随机数，实验五没有使用
 inline float get_random_float()
 {
     std::random_device dev;

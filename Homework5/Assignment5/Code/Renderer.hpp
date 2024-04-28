@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.hpp"
 
+//用来存储相交点的信息
 struct hit_payload
 {
     float tNear;

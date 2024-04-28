@@ -13,6 +13,7 @@ class Material{
 public:
     MaterialType m_type;
     Vector3f m_color;
+    //材料自己发光？
     Vector3f m_emission;
     float ior;
     float Kd, Ks;

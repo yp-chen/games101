@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 {
     Scene scene(1280, 960);
 
-    MeshTriangle bunny("../models/bunny/bunny.obj");
+    MeshTriangle bunny("./models/bunny/bunny.obj");
 
     scene.Add(&bunny);
     scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 20), 1));
@@ -26,6 +26,7 @@ int main(int argc, char** argv)
     r.Render(scene);
     auto stop = std::chrono::system_clock::now();
 
+    //渲染完成所需时间
     std::cout << "Render complete: \n";
     std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::hours>(stop - start).count() << " hours\n";
     std::cout << "          : " << std::chrono::duration_cast<std::chrono::minutes>(stop - start).count() << " minutes\n";

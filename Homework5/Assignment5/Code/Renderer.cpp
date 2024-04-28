@@ -48,7 +48,7 @@ Vector3f refract(const Vector3f &I, const Vector3f &N, const float &ior)
 //
 // \param ior is the material refractive index
 // [/comment]
-//菲涅尔
+//菲涅耳
 float fresnel(const Vector3f &I, const Vector3f &N, const float &ior)
 {
     float cosi = clamp(-1, 1, dotProduct(I, N));
@@ -63,8 +63,10 @@ float fresnel(const Vector3f &I, const Vector3f &N, const float &ior)
     else {
         float cost = sqrtf(std::max(0.f, 1 - sint * sint));
         cosi = fabsf(cosi);
+        //两个不同方向的极化
         float Rs = ((etat * cosi) - (etai * cost)) / ((etat * cosi) + (etai * cost));
         float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
+        //考虑不极化的光，返回两个均值
         return (Rs * Rs + Rp * Rp) / 2;
     }
     // As a consequence of the conservation of energy, transmittance is given by:
@@ -83,6 +85,7 @@ float fresnel(const Vector3f &I, const Vector3f &N, const float &ior)
 // \param[out] *hitObject stores the pointer to the intersected object (used to retrieve material information, etc.)
 // \param isShadowRay is it a shadow ray. We can return from the function sooner as soon as we have found a hit.
 // [/comment]
+//输入光线起点、方向、物体数组，返回光线与物体的交点信息
 std::optional<hit_payload> trace(
         const Vector3f &orig, const Vector3f &dir,
         const std::vector<std::unique_ptr<Object> > &objects)
@@ -129,6 +132,7 @@ Vector3f castRay(
         const Vector3f &orig, const Vector3f &dir, const Scene& scene,
         int depth)
 {
+    //终止条件
     if (depth > scene.maxDepth) {//如果超出了场景的最大光线反射/折射次数就设置颜色为黑色，并不再往下进行
         return Vector3f(0.0,0.0,0.0);
     }
@@ -140,9 +144,12 @@ Vector3f castRay(
         Vector3f N; //法线
         Vector2f st; // st coordinates
         payload->hit_obj->getSurfaceProperties(hitPoint, dir, payload->index, payload->uv, N, st);
+        //根据相交物体的材质类型进行不同的处理
         switch (payload->hit_obj->materialType) {
+            //反射和折射的材质
             case REFLECTION_AND_REFRACTION:
             {
+                //反射和折射的光线方向
                 Vector3f reflectionDirection = normalize(reflect(dir, N));
                 Vector3f refractionDirection = normalize(refract(dir, N, payload->hit_obj->ior));
                 //反射和折射的光线的起点不能正好在交点上，否则会由于自相交等产生精度问题，所以要加上一个偏移量
@@ -154,10 +161,12 @@ Vector3f castRay(
                                              hitPoint + N * scene.epsilon;
                 Vector3f reflectionColor = castRay(reflectionRayOrig, reflectionDirection, scene, depth + 1);
                 Vector3f refractionColor = castRay(refractionRayOrig, refractionDirection, scene, depth + 1);
+                //fresnel方程计算反射和折射的比例  
                 float kr = fresnel(dir, N, payload->hit_obj->ior);
                 hitColor = reflectionColor * kr + refractionColor * (1 - kr);
                 break;
             }
+            //反射材质
             case REFLECTION:
             {
                 float kr = fresnel(dir, N, payload->hit_obj->ior);
@@ -174,6 +183,7 @@ Vector3f castRay(
                 // We use the Phong illumation model int the default case. The phong model
                 // is composed of a diffuse and a specular reflection component.
                 // [/comment]
+                //用的phong模型，为漫反射和高光的叠加
                 Vector3f lightAmt = 0, specularColor = 0;
                 Vector3f shadowPointOrig = (dotProduct(dir, N) < 0) ?
                                            hitPoint + N * scene.epsilon :
@@ -182,6 +192,7 @@ Vector3f castRay(
                 // Loop over all lights in the scene and sum their contribution up
                 // We also apply the lambert cosine law
                 // [/comment]
+                //遍历每一个光照对着色点的贡献
                 for (auto& light : scene.get_lights()) {
                     Vector3f lightDir = light->position - hitPoint;
                     // square of the distance between hitPoint and the light
@@ -190,6 +201,7 @@ Vector3f castRay(
                     float LdotN = std::max(0.f, dotProduct(lightDir, N));
                     // is the point in shadow, and is the nearest occluding object closer to the object than the light itself?
                     auto shadow_res = trace(shadowPointOrig, lightDir, scene.get_objects());
+                    //判断光照是否能照到着色点
                     bool inShadow = shadow_res && (shadow_res->tNear * shadow_res->tNear < lightDistance2);
 
                     lightAmt += inShadow ? 0 : light->intensity * LdotN;

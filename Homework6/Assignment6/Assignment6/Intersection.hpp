@@ -19,6 +19,7 @@ struct Intersection
         obj =nullptr;
         m=nullptr;
     }
+    //是否相交，交点坐标，交点法线，交点距离，物体，材质
     bool happened;
     Vector3f coords;
     Vector3f normal;

@@ -62,6 +62,7 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
 //    float tnear = kInfinity;
     Vector2f uv;
     uint32_t index = 0;
+    //发生了碰撞
     if(intersection.happened) {
 
         Vector3f hitPoint = intersection.coords;
@@ -115,6 +116,7 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
                 for (uint32_t i = 0; i < get_lights().size(); ++i)
                 {
                     auto area_ptr = dynamic_cast<AreaLight*>(this->get_lights()[i].get());
+                    //
                     if (area_ptr)
                     {
                         // Do nothing for this assignment

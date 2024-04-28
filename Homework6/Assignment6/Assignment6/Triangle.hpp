@@ -137,8 +137,7 @@ public:
             const Vector3f& v2 = vertices[vertexIndex[k * 3 + 2]];
             float t, u, v;
             if (rayTriangleIntersect(v0, v1, v2, ray.origin, ray.direction, t,
-                                     u, v) &&
-                t < tnear) {
+                                     u, v) && t < tnear) {
                 tnear = t;
                 index = k;
                 intersect |= true;
