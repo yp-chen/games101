@@ -51,6 +51,7 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
     }
     else {
         Bounds3 centroidBounds;
+        std::vector<Object*>::iterator middling;
         for (int i = 0; i < objects.size(); ++i)
             centroidBounds =
                 Union(centroidBounds, objects[i]->getBounds().Centroid());
@@ -77,8 +78,40 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
             break;
         }
 
+        if (splitMethod == SplitMethod::NAIVE) {
+            middling = objects.begin() + (objects.size() / 2);
+        }
+        else if (splitMethod == SplitMethod::SAH) {
+            float totalSurfaceArea = centroidBounds.SurfaceArea();
+            int bucketSize = 10;//桶的数量
+            int optimalSplitIndex = 0;
+            float minCost = std::numeric_limits<float>::infinity(); //最小花费
+            float trav_cost = 0.125;
+            for (int i=0;i<bucketSize;++i) {
+                auto beginning = objects.begin();
+                auto middling = objects.begin() + (objects.size() * i / bucketSize);
+                auto ending = objects.end();
+                auto leftshapes = std::vector<Object*>(beginning, middling);
+                auto rightshapes = std::vector<Object*>(middling, ending);
+                Bounds3 leftbounds,rightbounds;
+                for (int i = 0; i < leftshapes.size(); ++i){
+                    leftbounds =Union(leftbounds, leftshapes[i]->getBounds().Centroid());
+                }
+                for (int i = 0; i < rightshapes.size(); ++i){
+                    rightbounds = Union(rightbounds, rightshapes[i]->getBounds().Centroid());
+                }
+                double SA = leftbounds.SurfaceArea();
+                double SB = rightbounds.SurfaceArea();
+                float cost = trav_cost + (SA * leftshapes.size() + SB * rightshapes.size()) / totalSurfaceArea;
+                if (cost < minCost){
+                    minCost = cost;
+                    optimalSplitIndex = i;
+                }
+            }
+            middling = objects.begin() + (objects.size() * optimalSplitIndex / bucketSize);
+        }
+
         auto beginning = objects.begin();
-        auto middling = objects.begin() + (objects.size() / 2);
         auto ending = objects.end();
 
         auto leftshapes = std::vector<Object*>(beginning, middling);
