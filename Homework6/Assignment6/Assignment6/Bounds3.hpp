@@ -106,7 +106,20 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
     // invDir: ray direction(x,y,z), invDir=(1.0/x,1.0/y,1.0/z), use this because Multiply is faster that Division
     // dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x>0),int(y>0),int(z>0)], use this to simplify your logic
     // TODO test if ray bound intersects
-    
+    Vector3f tmin = (pMin - ray.origin) * invDir;
+    Vector3f tmax = (pMax - ray.origin) * invDir;
+    if (dirIsNeg[0] < 0 ){
+        std::swap(tmin.x, tmax.x);
+    }
+    if (dirIsNeg[1] < 0 ){
+        std::swap(tmin.y, tmax.y);
+    }
+    if (dirIsNeg[2] < 0 ){
+        std::swap(tmin.z, tmax.z);
+    }
+    double tenter = std::fmax(tmin.x, std::fmax(tmin.y, tmin.z));
+    double texit = std::fmin(tmax.x, std::fmin(tmax.y, tmax.z));
+    return texit > tenter && texit >= 0;
 }
 
 //返回两个包围盒的并集

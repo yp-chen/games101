@@ -89,6 +89,7 @@ public:
         Vector3f max_vert = Vector3f{-std::numeric_limits<float>::infinity(),
                                      -std::numeric_limits<float>::infinity(),
                                      -std::numeric_limits<float>::infinity()};
+        std::cout<<"vertices: "<<mesh.Vertices.size()<<std::endl;
         for (int i = 0; i < mesh.Vertices.size(); i += 3) {
             std::array<Vector3f, 3> face_vertices;
             for (int j = 0; j < 3; j++) {
@@ -231,10 +232,13 @@ inline Intersection Triangle::getIntersection(Ray ray)
     t_tmp = dotProduct(e2, qvec) * det_inv;
 
     // TODO find ray triangle intersection
-
-
-
-
+    inter.happened = true;
+    //返回交点坐标
+    inter.coords = ray(t_tmp);
+    inter.normal = normal;
+    inter.distance = t_tmp;
+    inter.obj = this;
+    inter.m = m;
     return inter;
 }
 
