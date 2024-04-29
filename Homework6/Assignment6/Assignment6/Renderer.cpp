@@ -37,7 +37,6 @@ void Renderer::Render(const Scene& scene)
             // Don't forget to normalize this direction!
             Ray ray(eye_pos, normalize(Vector3f(x, y, -1)));
             framebuffer[m++] = scene.castRay(ray, 0);
-            std::cout<<framebuffer[m-1].x<<" "<<framebuffer[m-1].y<<" "<<framebuffer[m-1].z<<" "<<std::endl;
         }
         UpdateProgress(j / (float)scene.height);
     }

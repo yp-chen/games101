@@ -108,13 +108,13 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
     // TODO test if ray bound intersects
     Vector3f tmin = (pMin - ray.origin) * invDir;
     Vector3f tmax = (pMax - ray.origin) * invDir;
-    if (dirIsNeg[0] < 0 ){
+    if (dirIsNeg[0]){
         std::swap(tmin.x, tmax.x);
     }
-    if (dirIsNeg[1] < 0 ){
+    if (dirIsNeg[1]){
         std::swap(tmin.y, tmax.y);
     }
-    if (dirIsNeg[2] < 0 ){
+    if (dirIsNeg[2]){
         std::swap(tmin.z, tmax.z);
     }
     double tenter = std::fmax(tmin.x, std::fmax(tmin.y, tmin.z));
