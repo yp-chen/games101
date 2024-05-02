@@ -22,12 +22,19 @@ int main(int argc, char** argv)
     green->Kd = Vector3f(0.14f, 0.45f, 0.091f);
     Material* white = new Material(DIFFUSE, Vector3f(0.0f));
     white->Kd = Vector3f(0.725f, 0.71f, 0.68f);
+    Material* white1 = new Material(DIFFUSE, Vector3f(0.0f));
+    white1->Kd = Vector3f(0.0f, 0.0f, 0.0f);
+    white1->ior = 40.0f;
     Material* light = new Material(DIFFUSE, (8.0f * Vector3f(0.747f+0.058f, 0.747f+0.258f, 0.747f) + 15.6f * Vector3f(0.740f+0.287f,0.740f+0.160f,0.740f) + 18.4f *Vector3f(0.737f+0.642f,0.737f+0.159f,0.737f)));
     light->Kd = Vector3f(0.65f);
+
+    
 
     MeshTriangle floor("./models/cornellbox/floor.obj", white);
     MeshTriangle shortbox("./models/cornellbox/shortbox.obj", white);
     MeshTriangle tallbox("./models/cornellbox/tallbox.obj", white);
+    // MeshTriangle bunny("./models/bunny/bunny.obj", white1, Vector3f(200,-60,150), 
+        // Vector3f(1500,1500,1500), Vector3f(-1,0,0), Vector3f(0,1,0), Vector3f(0,0,-1));
     MeshTriangle left("./models/cornellbox/left.obj", red);
     MeshTriangle right("./models/cornellbox/right.obj", green);
     MeshTriangle light_("./models/cornellbox/light.obj", light);
@@ -35,6 +42,7 @@ int main(int argc, char** argv)
     scene.Add(&floor);
     scene.Add(&shortbox);
     scene.Add(&tallbox);
+    // scene.Add(&bunny);
     scene.Add(&left);
     scene.Add(&right);
     scene.Add(&light_);

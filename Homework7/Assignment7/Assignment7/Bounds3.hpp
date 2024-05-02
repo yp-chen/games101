@@ -109,7 +109,7 @@ inline bool Bounds3::IntersectP(const Ray& ray, const Vector3f& invDir,
     }
     double tenter = std::fmax(tmin.x, std::fmax(tmin.y, tmin.z));
     double texit = std::fmin(tmax.x, std::fmin(tmax.y, tmax.z));
-    return texit > tenter && texit >= 0;
+    return texit >= tenter && texit >= 0;
 }
 
 inline Bounds3 Union(const Bounds3& b1, const Bounds3& b2)
