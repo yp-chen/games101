@@ -146,7 +146,7 @@ Vector3f Material::sample(const Vector3f &wi, const Vector3f &N){
     return Vector3f();
 }
 
-//概率密度函数
+//概率密度函数(probablity density function)
 float Material::pdf(const Vector3f &wi, const Vector3f &wo, const Vector3f &N){
     switch(m_type){
         case DIFFUSE:
