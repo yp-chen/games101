@@ -29,6 +29,7 @@ public:
 
     // BVHAccel Public Methods
     BVHAccel(std::vector<Object*> p, int maxPrimsInNode = 1, SplitMethod splitMethod = SplitMethod::NAIVE);
+    //这是啥？没有用到
     Bounds3 WorldBound() const;
     ~BVHAccel();
 

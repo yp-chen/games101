@@ -46,6 +46,7 @@ public:
     Vector3f e1, e2;     // 2 edges v1-v0, v2-v0;
     Vector3f t0, t1, t2; // texture coords
     Vector3f normal;
+    //三角形面积
     float area;
     Material* m;
 
@@ -253,7 +254,15 @@ inline Intersection Triangle::getIntersection(Ray ray)
     t_tmp = dotProduct(e2, qvec) * det_inv;
 
     // TODO find ray triangle intersection
-
+    if(t_tmp<0) 
+        return inter;
+    inter.happened = true;
+    //返回交点坐标
+    inter.coords = ray(t_tmp);
+    inter.normal = normal;
+    inter.distance = t_tmp;
+    inter.obj = this;
+    inter.m = m;
     return inter;
 }
 

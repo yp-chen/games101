@@ -21,6 +21,7 @@ struct Intersection
     }
     bool happened;
     Vector3f coords;
+    //表示
     Vector3f tcoords;
     Vector3f normal;
     Vector3f emit;

@@ -128,7 +128,7 @@ Vector3f Material::getColorAt(double u, double v) {
     return Vector3f();
 }
 
-
+//采样方向
 Vector3f Material::sample(const Vector3f &wi, const Vector3f &N){
     switch(m_type){
         case DIFFUSE:
@@ -143,8 +143,10 @@ Vector3f Material::sample(const Vector3f &wi, const Vector3f &N){
             break;
         }
     }
+    return Vector3f();
 }
 
+//概率密度函数
 float Material::pdf(const Vector3f &wi, const Vector3f &wo, const Vector3f &N){
     switch(m_type){
         case DIFFUSE:
@@ -157,8 +159,10 @@ float Material::pdf(const Vector3f &wi, const Vector3f &wo, const Vector3f &N){
             break;
         }
     }
+    return 0.0f;
 }
 
+//BRDF
 Vector3f Material::eval(const Vector3f &wi, const Vector3f &wo, const Vector3f &N){
     switch(m_type){
         case DIFFUSE:
@@ -174,6 +178,7 @@ Vector3f Material::eval(const Vector3f &wi, const Vector3f &wo, const Vector3f &
             break;
         }
     }
+    return Vector3f(0.0f);
 }
 
 #endif //RAYTRACING_MATERIAL_H

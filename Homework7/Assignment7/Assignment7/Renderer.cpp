@@ -26,15 +26,17 @@ void Renderer::Render(const Scene& scene)
     // change the spp value to change sample ammount
     int spp = 16;
     std::cout << "SPP: " << spp << "\n";
+    int width, height;
+    width = height = sqrt(spp);
+    float step = 1.0f / width;
     for (uint32_t j = 0; j < scene.height; ++j) {
         for (uint32_t i = 0; i < scene.width; ++i) {
-            // generate primary ray direction
-            float x = (2 * (i + 0.5) / (float)scene.width - 1) *
-                      imageAspectRatio * scale;
-            float y = (1 - 2 * (j + 0.5) / (float)scene.height) * scale;
-
-            Vector3f dir = normalize(Vector3f(-x, y, 1));
+            // generate primary ray direction   
             for (int k = 0; k < spp; k++){
+                float x = (2 * (i + step / 2 + step * (k % width)) / (float)scene.width - 1) *
+                        imageAspectRatio * scale;
+                float y = (1 - 2 * (j + step / 2 + step * (k / height)) / (float)scene.height) * scale;
+                Vector3f dir = normalize(Vector3f(-x, y, 1));
                 framebuffer[m] += scene.castRay(Ray(eye_pos, dir), 0) / spp;  
             }
             m++;
