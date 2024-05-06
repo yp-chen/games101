@@ -57,7 +57,7 @@ void Renderer::Render(const Scene& scene)
     int thread_step = scene.height / thread_num;
     std::vector<std::thread> rays;
     // change the spp value to change sample ammount
-    int spp = 16;
+    int spp = 300;
     // std::cout << "SPP: " << spp << "\n";
     // int width, height;
     // width = height = sqrt(spp);
